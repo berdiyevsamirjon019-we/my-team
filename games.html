@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Qoy-Qog'oz-Qaychi Level</title>
+</head>
+<body>
+
+<h1>✂️🪨📄 Qoy - Qog'oz - Qaychi LEVEL SYSTEM</h1>
+
+<p>Tanla:</p>
+
+<button onclick="play('qoy')">Qoy</button>
+<button onclick="play('qogoz')">Qog'oz</button>
+<button onclick="play('qaychi')">Qaychi</button>
+
+<h2 id="result"></h2>
+
+<h3>🏆 Hisob:</h3>
+<p>Sen: <span id="userScore">0</span></p>
+<p>Kompyuter: <span id="compScore">0</span></p>
+
+<h3>⭐ Level: <span id="level">1</span></h3>
+<p>Progress (level uchun yutuqlar): <span id="progress">0</span>/3</p>
+
+<button onclick="resetGame()">🔄 Reset</button>
+
+<script>
+let userScore = 0;
+let compScore = 0;
+
+let wins = 0;
+let level = 1;
+
+function getComputerChoice() {
+    let choices = ["qoy", "qogoz", "qaychi"];
+
+    // Level 1: random
+    if (level === 1) {
+        return choices[Math.floor(Math.random() * 3)];
+    }
+
+    // Level 2: biroz aqlli (ko‘proq random, lekin ba’zan qarshi harakat)
+    if (level === 2) {
+        let r = Math.random();
+        if (r < 0.7) {
+            return choices[Math.floor(Math.random() * 3)];
+        } else {
+            return "qaychi";
+        }
+    }
+
+    // Level 3+: ko‘proq “qarshi o‘ynaydi”
+    let r = Math.random();
+    if (r < 0.5) {
+        return choices[Math.floor(Math.random() * 3)];
+    } else {
+        return "qaychi"; // “agressiv” strategiya
+    }
+}
+
+function play(user) {
+    let comp = getComputerChoice();
+
+    let result = "";
+
+    if (user === comp) {
+        result = "🤝 Durang!";
+    } 
+    else if (
+        (user === "qoy" && comp === "qaychi") ||
+        (user === "qogoz" && comp === "qoy") ||
+        (user === "qaychi" && comp === "qogoz")
+    ) {
+        result = "🎉 Sen yutding!";
+        userScore++;
+        wins++;
+
+        // Level up
+        if (wins >= 3) {
+            level++;
+            wins = 0;
+        }
+    } 
+    else {
+        result = "😢 Kompyuter yutdi!";
+        compScore++;
+    }
+
+    document.getElementById("result").innerText = result;
+    document.getElementById("userScore").innerText = userScore;
+    document.getElementById("compScore").innerText = compScore;
+    document.getElementById("level").innerText = level;
+    document.getElementById("progress").innerText = wins;
+}
+
+function resetGame() {
+    userScore = 0;
+    compScore = 0;
+    wins = 0;
+    level = 1;
+
+    document.getElementById("userScore").innerText = 0;
+    document.getElementById("compScore").innerText = 0;
+    document.getElementById("level").innerText = 1;
+    document.getElementById("progress").innerText = 0;
+    document.getElementById("result").innerText = "O‘yin qayta boshlandi 🔄";
+}
+</script>
+
+</body>
+</html>
